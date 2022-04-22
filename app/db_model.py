@@ -62,6 +62,8 @@ class Customer(db.Model):
     customer_address = Column(Text(2000),unique=False,index=False)
     customer_cards = Column(Text(2000),unique=False,index=False)
     customer_push_notification_token = Column(String(255),unique=True,index=True)
+    permitted = Column(Boolean,unique=False)
+    permitted_by = Column(String(255),unique=False)
 
     def __repr__(self):
         return f"<customer {self.customer_id}>"

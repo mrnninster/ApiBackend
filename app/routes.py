@@ -50,6 +50,7 @@ load_dotenv(".env")
 def test():
     return jsonify({"message": f"Api for {os.environ.get('PROJECT_NAME').upper()} is Alive", "status": "success"})
 
+
 # Admin Routes
 @app.route(f"/create_admin", methods=["POST"])
 def create_admin():
@@ -78,7 +79,7 @@ def admin_login():
 
 
 @app.route(f"/all_vendors",methods=["POST"])
-def fetch_vendors():
+def all_vendors():
 
     # Handle Request Filter
     admin_id = request.form["admin_id"]
@@ -178,6 +179,43 @@ def remove_featured_product():
     Remove_Featured_Product_Response = Make_Non_Featured_Product(admin_id,product_id)
     return Remove_Featured_Product_Response
 
+
+@app.route(f"/enable_customer",methods=["POST"])
+def enable_customer():
+        
+    # Get Form Data
+    admin_id = request.form["admin_id"]
+    customer_id = request.form["customer_id"]
+
+    # Enable Customer
+    Enable_Customer_Response = Toggle_Enable_Customer("activate",admin_id,customer_id)
+    return Enable_Customer_Response
+
+
+@app.route(f"/enable_customer",methods=["POST"])
+def disable_customer():
+        
+    # Get Form Data
+    admin_id = request.form["admin_id"]
+    customer_id = request.form["customer_id"]
+
+    # Enable Customer
+    Enable_Customer_Response = Toggle_Enable_Customer("deactivate",admin_id,customer_id)
+    return Enable_Customer_Response
+
+
+@app.route(f"/all_customers",methods=["POST"])
+def all_customers():
+    
+    # Get Form Data
+    filter = request.form["filter"]
+    admin_id = request.form["admin_id"]
+
+    # Get All Customers
+    All_Customers_Response = Get_All_Customers(admin_id,filter)
+    return All_Customers_Response
+
+
 # Vendor Routes
 @app.route(f"/create_vendor", methods=["POST"])
 def create_vendor():
@@ -260,6 +298,7 @@ def create_customer():
     # Create Admin Account
     Create_Response = Create_Account("customer",email=email,password=password,username=username)
     return Create_Response
+
 
 @app.route(f"/customer_login",methods=["POST"])
 def customer_login():

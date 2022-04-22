@@ -476,26 +476,36 @@ def Toggle_Enable_Vendor(action,admin_id,vendor_id):
     status_code: request status code
     """
     try:
-        # Fetch Vendor
-        vendor = Vendor.query.filter_by(vendor_id=vendor_id).first()
-        
-        #  Activate Vendor
-        if action == "activate":
-            vendor.permitted = True
-            vendor.permited_by = admin_id
-            db.session.commit()
-            return {"status_message":"Vendor Activated","status":"success","status_code":200}
+        # Fetch Admin
+        admin = Admin.query.filter_by(admin_id=admin_id).first()
 
-        # Deactivate Vendor
-        elif action == "deactivate":
-            vendor.permitted = False
-            vendor.permited_by = admin_id
-            db.session.commit()
-            return {"status_message":"Vendor Deactivated","status":"success","status_code":200}
+        # Check Admin Exists
+        if admin is not None: 
 
-        # On Invalid Action
+            # Fetch Vendor
+            vendor = Vendor.query.filter_by(vendor_id=vendor_id).first()
+            
+            #  Activate Vendor
+            if action == "activate":
+                vendor.permitted = True
+                vendor.permited_by = admin_id
+                db.session.commit()
+                return {"status_message":"Vendor Activated","status":"success","status_code":200}
+
+            # Deactivate Vendor
+            elif action == "deactivate":
+                vendor.permitted = False
+                vendor.permited_by = admin_id
+                db.session.commit()
+                return {"status_message":"Vendor Deactivated","status":"success","status_code":200}
+
+            # On Invalid Action
+            else:
+                return{"status_message":"Invalid Action","status":"failed","status_code":400}
+
+        # On Invalid Admin
         else:
-            return{"status_message":"Invalid Action","status":"failed","status_code":400}
+            return{"status_message":"Invalid Admin","status":"failed","status_code":400}
 
     # On Error Handler and Return Response
     except Exception as e:
@@ -874,3 +884,104 @@ def Get_Featured_Products():
     except Exception as e:
         logger.debug(f"GetFeaturedProductError: Failed to Fetch Featured Products,{e}")
         return{"status_message":"Failed to Fetch Featured Products","status":"failed","status_code":400}
+
+
+def Toggle_Enable_Customer(action,admin_id,customer_id):
+    """ 
+    This function enables admin to activate or deactivate a vendors account
+
+    Params
+    ------
+    action: The action to be performed
+            ation options: activate,deactivate
+    admin_id: The id of the admin
+    vendor_id: The id of the vendor
+
+    Returns
+    -------
+    status_message: the result of the api query
+    status: Add Product Status
+            options: success,failed
+    status_code: request status code
+    """
+    try:
+        # Fetch Admin
+        admin = Admin.query.filter_by(admin_id=admin_id).first()
+
+        # Check Admin Exists
+        if admin is not None: 
+
+            # Fetch Vendor
+            customer = Customer.query.filter_by(customer_id=customer_id).first()
+            
+            #  Activate Vendor
+            if action == "activate":
+                customer.permitted = True
+                customer.permited_by = admin_id
+                db.session.commit()
+                return {"status_message":"Customer Activated","status":"success","status_code":200}
+
+            # Deactivate Vendor
+            elif action == "deactivate":
+                customer.permitted = False
+                customer.permited_by = admin_id
+                db.session.commit()
+                return {"status_message":"Customer Deactivated","status":"success","status_code":200}
+
+            # On Invalid Action
+            else:
+                return{"status_message":"Invalid Action","status":"failed","status_code":400}
+
+        # On Invalid Admin
+        else:
+            return{"status_message":"Invalid Admin","status":"failed","status_code":400}
+
+    # On Error Handler and Return Response
+    except Exception as e:
+        logger.debug(f"ToggleEnableCustomerError: Failed to Toggle Enable Vendor,{e}")
+        return{"message":"Failed to Toggle Enable Customer","status":"failed","status_code":400}
+
+
+def Get_All_Customers(admin_id,filter):
+    """
+    This function fetches all the vendors 
+    and filters them depending on the filter
+
+    Params
+    ------
+    admin_id: The id of the admin used to fetch vendors
+    filter: The filter used to filter vendors
+            options: all,active,inactive
+
+    Returns
+    -------
+    customers: The list of customers
+    status_message: the result of the api query
+    status: Add Product Status
+            options: success,failed
+    status_code: request status code
+    """
+    try:
+        # Check For Admin
+        admin = Admin.query.filter_by(admin_id=admin_id).first()
+
+        # Verify Admin Exists
+        if admin is not None:
+
+            # Fetch Vendors
+            customers = Customer.query.all()
+
+            # Filter Vendors
+            if filter == "active":
+                customers = [{"customer_id":customer.customer_id,"customer_name":customer.customer_name,"customer_email":customer.customer_email,"customer_address":customer.customer_address,"customer_push_notification_token":customer.customer_push_notification_token} for customer in customers if customer.permitted == True]
+            elif filter == "inactive":
+                customers = [{"customer_id":customer.customer_id,"customer_name":customer.customer_name,"customer_email":customer.customer_email,"customer_address":customer.customer_address,"customer_push_notification_token":customer.customer_push_notification_token} for customer in customers if not customer.permitted == True]
+            else:
+                customers = [{"customer_id":customer.customer_id,"customer_name":customer.customer_name,"customer_email":customer.customer_email,"customer_address":customer.customer_address,"customer_push_notification_token":customer.customer_push_notification_token, "customer_permitted":customer.permitted} for customer in customers]
+
+        # Return Vendors
+        return {"vendors":customers,"status_message":"Customers Fetched","status":"success","status_code":200}
+
+    except Exception as e:
+        logger.debug(f"FetchCustomersError: Failed to Fetch Customers,{e}")
+        return{"status_message":"Failed to Fetch Customers","status":"failed","status_code":400}
