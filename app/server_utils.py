@@ -161,7 +161,7 @@ def Create_Account(account_type,**kwargs):
     Returns
     -------
     Type: Dict
-    keys: username,password
+    keys: username,password,email,pussh_notification_token
     status_message: the result of the api query
     status: Login status
             options: success,failed
@@ -229,7 +229,7 @@ def Create_Account(account_type,**kwargs):
     
     # If Account Exists
     else:
-        return {"status_message":f"Account Already Exists with email {kwargs['email']}","status":"success","status_code":200}
+        return {"status_message":f"Account Already Exists with email {kwargs['email']}","status":"failed","status_code":400}
 
 
 def Account_Login(account_type,email,password):
@@ -510,7 +510,7 @@ def Toggle_Enable_Vendor(action,admin_id,vendor_id):
     # On Error Handler and Return Response
     except Exception as e:
         logger.debug(f"ToggleEnableVendorError: Failed to Toggle Enable Vendor,{e}")
-        return{"message":"Failed to Toggle Enable Vendor","status":"failed","status_code":400}
+        return{"status_message":"Failed to Toggle Enable Vendor","status":"failed","status_code":400}
 
 
 def Remove_Product(account_type,account_id,product_id):
@@ -745,7 +745,7 @@ def Single_Vendor(vendor_id):
         if vendor is not None:
 
             # Return Vendor
-            return {"vendor":{"vendor_id":vendor.vendor_id,"vendor_name":vendor.vendor_name,"vendor_email":vendor.vendor_email,"vendor_push_notification_token":vendor.vendor_push_notification_token,"vendor_permitted":vendor.permitted},"status_message":"Vendor Fetched","status":"success","status_code":200}
+            return {"vendor":[{"vendor_id":vendor.vendor_id,"vendor_name":vendor.vendor_name,"vendor_email":vendor.vendor_email,"vendor_push_notification_token":vendor.vendor_push_notification_token,"vendor_permitted":vendor.permitted}],"status_message":"Vendor Fetched","status":"success","status_code":200}
         else:
             return{"status_message":"Vendor Not Found","status":"failed","status_code":400}
 
