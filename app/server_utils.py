@@ -161,7 +161,7 @@ def Create_Account(account_type,**kwargs):
     Returns
     -------
     Type: Dict
-    keys: username,password
+    keys: username,password,email,pussh_notification_token
     status_message: the result of the api query
     status: Login status
             options: success,failed
@@ -229,7 +229,7 @@ def Create_Account(account_type,**kwargs):
     
     # If Account Exists
     else:
-        return {"status_message":f"Account Already Exists with email {kwargs['email']}","status":"success","status_code":200}
+        return {"status_message":f"Account Already Exists with email {kwargs['email']}","status":"failed","status_code":400}
 
 
 def Account_Login(account_type,email,password):
@@ -310,6 +310,7 @@ def Add_Product(account_id,product_name,product_description,product_price,produc
 
     Params
     ------
+    account_id: The account ID of either admin or vendor
     product_name: The name of the product
     product_description: The description of the product
     product_price: The price of the product
@@ -510,7 +511,7 @@ def Toggle_Enable_Vendor(action,admin_id,vendor_id):
     # On Error Handler and Return Response
     except Exception as e:
         logger.debug(f"ToggleEnableVendorError: Failed to Toggle Enable Vendor,{e}")
-        return{"message":"Failed to Toggle Enable Vendor","status":"failed","status_code":400}
+        return{"status_message":"Failed to Toggle Enable Vendor","status":"failed","status_code":400}
 
 
 def Remove_Product(account_type,account_id,product_id):
@@ -745,7 +746,7 @@ def Single_Vendor(vendor_id):
         if vendor is not None:
 
             # Return Vendor
-            return {"vendor":{"vendor_id":vendor.vendor_id,"vendor_name":vendor.vendor_name,"vendor_email":vendor.vendor_email,"vendor_push_notification_token":vendor.vendor_push_notification_token,"vendor_permitted":vendor.permitted},"status_message":"Vendor Fetched","status":"success","status_code":200}
+            return {"vendor":[{"vendor_id":vendor.vendor_id,"vendor_name":vendor.vendor_name,"vendor_email":vendor.vendor_email,"vendor_push_notification_token":vendor.vendor_push_notification_token,"vendor_permitted":vendor.permitted}],"status_message":"Vendor Fetched","status":"success","status_code":200}
         else:
             return{"status_message":"Vendor Not Found","status":"failed","status_code":400}
 
@@ -888,7 +889,7 @@ def Get_Featured_Products():
 
 def Toggle_Enable_Customer(action,admin_id,customer_id):
     """ 
-    This function enables admin to activate or deactivate a vendors account
+    This function enables admin to activate or deactivate a customers account
 
     Params
     ------
@@ -980,7 +981,7 @@ def Get_All_Customers(admin_id,filter):
                 customers = [{"customer_id":customer.customer_id,"customer_name":customer.customer_name,"customer_email":customer.customer_email,"customer_address":customer.customer_address,"customer_push_notification_token":customer.customer_push_notification_token, "customer_permitted":customer.permitted} for customer in customers]
 
         # Return Vendors
-        return {"vendors":customers,"status_message":"Customers Fetched","status":"success","status_code":200}
+        return {"customers":customers,"status_message":"Customers Fetched","status":"success","status_code":200}
 
     except Exception as e:
         logger.debug(f"FetchCustomersError: Failed to Fetch Customers,{e}")

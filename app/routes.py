@@ -90,7 +90,7 @@ def all_vendors():
     return fetch_vendor_response
 
 
-@app.route(f"/enable_vendor",methods=["POST"])
+@app.route(f"/admin_enable_vendor",methods=["POST"])
 def enable_vendor():
     
     # Get Form Data
@@ -102,7 +102,7 @@ def enable_vendor():
     return Enable_Vendor_Response
 
 
-@app.route(f"/disable_vendor",methods=["POST"])
+@app.route(f"/admin_disable_vendor",methods=["POST"])
 def disable_vendor():
     
     # Get Form Data
@@ -156,7 +156,7 @@ def admin_edit_product():
     return Edit_Product_Response
 
 
-@app.route(f"/make_featured_product",methods=["POST"])
+@app.route(f"/admin_make_featured_product",methods=["POST"])
 def make_featured_product():
 
     # Get Form Data
@@ -168,7 +168,7 @@ def make_featured_product():
     return Make_Featured_Product_Response
 
 
-@app.route(f"/remove_featured_product",methods=["POST"])
+@app.route(f"/admin_remove_featured_product",methods=["POST"])
 def remove_featured_product():
  
     # Get Form Data
@@ -180,7 +180,7 @@ def remove_featured_product():
     return Remove_Featured_Product_Response
 
 
-@app.route(f"/enable_customer",methods=["POST"])
+@app.route(f"/admin_enable_customer",methods=["POST"])
 def enable_customer():
         
     # Get Form Data
@@ -192,7 +192,7 @@ def enable_customer():
     return Enable_Customer_Response
 
 
-@app.route(f"/enable_customer",methods=["POST"])
+@app.route(f"/admin_disable_customer",methods=["POST"])
 def disable_customer():
         
     # Get Form Data
