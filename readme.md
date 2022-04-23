@@ -59,7 +59,7 @@ Read me file for the backend routes for the doxael app
             - failed: {"status_message":"Vendor Not Found","status":"failed","status_code":400}
 
 
-- /enable_vendors: POST
+- /admin_enable_vendors: POST
     - Params:
         - admin_id
         - vendor_id
@@ -71,7 +71,7 @@ Read me file for the backend routes for the doxael app
             - failed: {"status_message":"Failed to Toggle Enable Vendor","status":"failed","status_code":400}
 
 
-- /disable_vendors: POST
+- /admin_disable_vendors: POST
     - Params:
         - admin_id
         - vendor_id
@@ -92,3 +92,143 @@ Read me file for the backend routes for the doxael app
         - sample:
             - success: {"product_data":[{"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":image_URL,"product_discount":product_discount,"product_is_available":product_is_available,"product_owner":product_owner}],"status_message":"All Products Fetched","status":"success","status_code":200}
             - failed: {"status_message":"No Products Found","status":"failed","status_code":400}
+
+
+- /all_admin_products: POST
+    - Params:
+        - admin_id
+    - Returns:
+        - type: JSON
+        - keys: product_data,status_message,status,status_code
+        - sample:
+            - success: {"product_data":[{"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":image_URL,"product_discount":product_discount,"product_is_available":product_is_available,"product_owner":product_owner}],"status_message":"All Products Fetched","status":"success","status_code":200}
+            - failed: {"status_message":"No Products Found","status":"failed","status_code":400}
+
+
+- /all_vendor_products: POST
+    - Params:
+        - vendor_id
+    - Returns:
+        - type: JSON
+        - keys: product_data,status_message,status,status_code
+        - sample:
+            - success: {"product_data":[{"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":image_URL,"product_discount":product_discount,"product_is_available":product_is_available,"product_owner":product_owner}],"status_message":"All Products Fetched","status":"success","status_code":200}
+            - failed: {"status_message":"No Products Found","status":"failed","status_code":400}
+
+
+- /single_product: GET
+    - Params:
+        - product_id
+    - Return
+        - type: JSON
+        - keys: product_id,product_name,product_description,product_price,product_image,product_discount,product_is_available,status_message,status,status_code
+        - sample:
+            - success: {"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":product_Img_URL,"product_discount":product_discount,"product_is_available":product_is_available,"status_message":"Product Fetched","status":"success","status_code":200}
+        - failed: {"status_message":"Product Not Found","status":"failed","status_code":400}
+
+
+- /add_product: POST:
+    - Params:
+        - owner_id(value is admin_id)
+        - product_name
+        - product_description
+        - product_price
+        - product_image
+        - product_discount
+    - Return:
+        - type: JSON
+        - keys: product_id,product_name,product_description,product_price,product_image,product_discount,product_is_available,status_message,status,status_code
+        - sample:
+            - success: {"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":product_Img_URL,"product_discount":product_discount,"product_is_available":product_is_available,"status_message":"Product Fetched","status":"success","status_code":200}
+        - failed: {"status_message":"Failed To Add New Product","status":"failed","status_code":400}
+
+
+- /admin_edit_product: POST
+    - Params:
+        - admin_id
+        - product_id
+        - product_name(optional)
+        - product_description(optional)
+        - product_price(optional)
+        - product_image(optional)
+        - product_discount(optional)
+        - product_is_available(optional)
+    - Return:
+        - type: JSON
+        - keys: product_id,product_name,product_description,product_price,product_image,product_discount,product_is_available,status_message,status,status_code
+        - sample:
+            - success: {"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":product_Img_URL,"product_discount":product_discount,"product_is_available":product_is_available,"status_message":"Product Fetched","status":"success","status_code":200}
+        - failed: {"status_message":"Failed to Edit Product","status":"failed","status_code":400}
+
+
+- /admin_make_featured_product: POST
+    - Params:
+        - admin_id
+        - product_id
+    - Return:
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Product Made Featured","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Make Product Featured","status":"failed","status_code":400}
+
+
+- /admin_remove_featured_product: POST
+    - Params: 
+        - admin_id
+        - product_id
+    - Return:
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Product Made Non Featured","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Make Product Featured","status":"failed","status_code":400}
+
+
+- /admin_remove_product: POST
+    - Params:
+        - admin_id
+        - product_id
+    - Return:
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Product Removed","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Remove Product","status":"failed","status_code":400}
+
+
+- /all_customers: POST
+    - Params:
+        - admin_id
+        - filter
+            - options: all,active,inactive
+    - Return:
+        - type: JSON
+        - keys: customers,status_message,status,status_code
+        - sample:
+            - success: {"customers": [{"customer_id":customer_id,"customer_name":customer_name,"customer_email":customer_email,"customer_address":customer_address,"customer_push_notification_token":customer_push_notification_token, "customer_permitted":permitted}],"status_message":"Customers Fetched","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Fetch Customers","status":"failed","status_code":400}
+
+
+- /admin_enable_customers: POST
+    - Params:
+        - admin_id
+        - customer_id
+    - Return:
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Customer Activated","status":"success","status_code":200}
+            - failed: {"message":"Failed to Toggle Enable Customer","status":"failed","status_code":400}
+
+
+- /admin_disable_customers: POST
+    - Params:
+        - admin_id
+        - customer_id
+    - Return:
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Customer Deactivated","status":"success","status_code":200}
+            - failed: {"message":"Failed to Toggle Enable Customer","status":"failed","status_code":400}

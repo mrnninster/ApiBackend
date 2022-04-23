@@ -310,6 +310,7 @@ def Add_Product(account_id,product_name,product_description,product_price,produc
 
     Params
     ------
+    account_id: The account ID of either admin or vendor
     product_name: The name of the product
     product_description: The description of the product
     product_price: The price of the product
@@ -888,7 +889,7 @@ def Get_Featured_Products():
 
 def Toggle_Enable_Customer(action,admin_id,customer_id):
     """ 
-    This function enables admin to activate or deactivate a vendors account
+    This function enables admin to activate or deactivate a customers account
 
     Params
     ------
@@ -980,7 +981,7 @@ def Get_All_Customers(admin_id,filter):
                 customers = [{"customer_id":customer.customer_id,"customer_name":customer.customer_name,"customer_email":customer.customer_email,"customer_address":customer.customer_address,"customer_push_notification_token":customer.customer_push_notification_token, "customer_permitted":customer.permitted} for customer in customers]
 
         # Return Vendors
-        return {"vendors":customers,"status_message":"Customers Fetched","status":"success","status_code":200}
+        return {"customers":customers,"status_message":"Customers Fetched","status":"success","status_code":200}
 
     except Exception as e:
         logger.debug(f"FetchCustomersError: Failed to Fetch Customers,{e}")
