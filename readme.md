@@ -17,10 +17,10 @@ Read me file for the backend routes for the doxael app
         - password
     - Return:
         - type: JSON
-        - keys: username,password,email,push_notification_token,status_message,status,status_code
+        - keys: id,username,password,email,push_notification_token,status_message,status,status_code
         - sample: 
             - success: {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":Admin Account Created","status":"success","status_code":200}
-            - failed: {"status_message":f"Account Already Exists with email admin_mail@doxael.com}","status":"failed","status_code":200}
+            - failed: {"status_message":f"Account Already Exists with email admin_mail@doxael.com}","status":"failed","status_code":400}
 
 
 - /admin_login: POST
@@ -232,3 +232,147 @@ Read me file for the backend routes for the doxael app
         - sample:
             - success: {"status_message":"Customer Deactivated","status":"success","status_code":200}
             - failed: {"message":"Failed to Toggle Enable Customer","status":"failed","status_code":400}
+
+
+- /admin_reset_password: POST
+    - Params:
+        - email
+    - Return
+        - type: JSON
+        - keys: reset_token,status_message,status,status_code
+        - sample:
+            - success: {"reset_token":token,"status_message":"Password Reset Mail Sent","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Reset Password","status":"failed","status_code":400}
+
+
+- /admin_update_password: POST
+    - Params:
+        - reset_token
+        - reset_pin
+        - password
+        - confirmPassword
+    - Return
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Password Updated","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Update Password","status":"failed","status_code":400}
+
+
+### VENDOR SECTION
+- /create_vendor: POST
+    - Params:
+        - email
+        - password
+        - username (value is vendors full name)
+    - Return:
+        - type: JSON
+        - keys: id,username,password,email,push_notification_token,status_message,status,status_code
+        - sample: 
+            - success: {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":Vendor Account Created","status":"success","status_code":200}
+            - failed: {"status_message":f"Account Already Exists with email vendor_mail@doxael.com}","status":"failed","status_code":400}
+
+
+- /vendor_login: POST
+    - Params:
+        - email
+        - password
+    - Return:
+        - type: JSON
+        - keys: vendor_id,username,email,push_notification_token,status_message,status,status_code
+        - sample:
+            - success: {"vendor_id":vendor_id,"user_name":admin_name,"email":admin_email,"push_notification_token":push_notification_token,"status_message":"Vendor Logged In","status":"success","status_code":200}
+            - failed: {"status_message":"Invalid Password","status":"failed","status_code":400}
+
+
+- /vendor_reset_password: POST
+    - Params:
+        - email
+    - Return
+        - type: JSON
+        - keys: reset_token,status_message,status,status_code
+        - sample:
+            - success: {"reset_token":token,"status_message":"Password Reset Mail Sent","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Reset Password","status":"failed","status_code":400}
+
+
+- /vendor_update_password: POST
+    - Params:
+        - reset_token
+        - reset_pin
+        - password
+        - confirmPassword
+    - Return
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Password Updated","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Update Password","status":"failed","status_code":400}
+
+
+- /add_product: POST:
+    - Params:
+        - owner_id(value is vendor_id)
+        - product_name
+        - product_description
+        - product_price
+        - product_image
+        - product_discount
+    - Return:
+        - type: JSON
+        - keys: product_id,product_name,product_description,product_price,product_image,product_discount,product_is_available,status_message,status,status_code
+        - sample:
+            - success: {"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":product_Img_URL,"product_discount":product_discount,"product_is_available":product_is_available,"status_message":"Product Fetched","status":"success","status_code":200}
+        - failed: {"status_message":"Failed To Add New Product","status":"failed","status_code":400}
+
+
+- /all_vendor_products: POST
+    - Params:
+        - vendor_id
+    - Returns:
+        - type: JSON
+        - keys: product_data,status_message,status,status_code
+        - sample:
+            - success: {"product_data":[{"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":image_URL,"product_discount":product_discount,"product_is_available":product_is_available,"product_owner":product_owner}],"status_message":"All Products Fetched","status":"success","status_code":200}
+            - failed: {"status_message":"No Products Found","status":"failed","status_code":400}
+
+
+- /single_product: GET
+    - Params:
+        - product_id
+    - Return
+        - type: JSON
+        - keys: product_id,product_name,product_description,product_price,product_image,product_discount,product_is_available,status_message,status,status_code
+        - sample:
+            - success: {"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":product_Img_URL,"product_discount":product_discount,"product_is_available":product_is_available,"status_message":"Product Fetched","status":"success","status_code":200}
+        - failed: {"status_message":"Product Not Found","status":"failed","status_code":400}
+
+
+- /vendor_edit_product: POST
+    - Params:
+        - owner_id (value is vendor_id)
+        - product_id
+        - product_name
+        - product_description
+        - product_price
+        - product_image
+        - product_discount
+        - product_is_available
+    - Return:
+        - type: Json
+        - keys: product_id,product_name,product_description,product_price,product_image,product_discount,product_is_available,status_message,status,status_code
+        - sample:
+            - success: {"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":product_Img_URL,"product_discount":product_discount,"product_is_available":product_is_available,"status_message":"Product Fetched","status":"success","status_code":200}
+        - failed: {"status_message":"Failed to Edit Product","status":"failed","status_code":400}
+
+    
+- /vendor_remove_product: POST
+    - Params:
+        - vendor_id
+        - product_id
+    - Return:
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Product Removed","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Remove Product","status":"failed","status_code":400}
