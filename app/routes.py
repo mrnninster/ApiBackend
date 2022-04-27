@@ -217,7 +217,7 @@ def all_customers():
 
 
 @app.route(f"/admin_reset_password",methods=["POST"])
-def reset_password():
+def admin_reset_password():
 
     # Get Form Data
     email = request.form["email"]
@@ -228,7 +228,7 @@ def reset_password():
 
 
 @app.route(f"/admin_update_password",methods=["POST"])
-def update_password():
+def admin_update_password():
 
     # Get Form Data
     session_token = request.form["reset_token"]
@@ -267,6 +267,31 @@ def vendor_login():
 
     # Request Response
     return(login_response)
+
+
+@app.route(f"/vendor_reset_password",methods=["POST"])
+def vendor_reset_password():
+
+    # Get Form Data
+    email = request.form["email"]
+
+    # Reset Password
+    Reset_Password_Response = Reset_Password("vendor",email)
+    return Reset_Password_Response
+
+
+@app.route(f"/vendor_update_password",methods=["POST"])
+def vendor_update_password():
+
+    # Get Form Data
+    session_token = request.form["reset_token"]
+    pin = request.form["reset_pin"]
+    password = request.form["password"]
+    confirmPassword = request.form["confirmPassword"]
+
+    # Update Password
+    Update_Password_Response = Update_Password("vendor",session_token,pin,password,confirmPassword)
+    return Update_Password_Response
 
 
 @app.route(f"/all_vendor_products",methods=["POST"])

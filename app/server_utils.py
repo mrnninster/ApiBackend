@@ -1090,19 +1090,19 @@ def Send_Reset_Mail(email,reset_pin):
         sendinblue_api = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
         senderSmtp = sib_api_v3_sdk.SendSmtpEmailSender(name="Password Reset",email="no_reply@doxael.com")
-        sendTo = sib_api_v3_sdk.SendSmtpEmailTo(email="adefolahanakinsola@gmail.com")
+        sendTo = sib_api_v3_sdk.SendSmtpEmailTo(email=f"{email}")
         arrTo = [sendTo] 
         send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(sender=senderSmtp,to=arrTo,html_content=f"Kindly Reset Your Password using the code {reset_pin}, please be aware that, the validity period for password reset is 15 minutes",subject="Resetting Your Account Password")
 
         # Send a transactional 
-        api_response = sendinblue_api.send_transac_email(send_smtp_email)
+        sendinblue_api.send_transac_email(send_smtp_email)
 
         # Create Timed Token
         expiry_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
         token = jwt.encode({'reset_pin':reset_pin,'email':email,'expiration': f"{expiry_time}"},os.environ.get('SECRETE_KEY'),algorithm='HS256')
 
         # Return Response
-        return {"ResetToken":token,"status_message":"Password Reset Mail Sent","status":"success","status_code":200}
+        return {"reset_token":token,"status_message":"Password Reset Mail Sent","status":"success","status_code":200}
 
     except ApiException as e:
         logger.exception(f"SendResetMailError: Failed to Send Reset Mail,{e}")
@@ -1155,6 +1155,25 @@ def Reset_Password(account_type,email=None):
 
 
 def Update_Password(account_type,token,pin,password,confirmPassword):
+    """
+    This function updates the password of the specified account
+
+    Params:
+    -------
+    account_type: The type of account to be updated
+    token: The reset token to be used to update the password
+    pin: The reset pin to be used to update the password
+    password: The new password to be used to update the password
+    confirmPassword: The new password to be used to update the password
+
+    Returns:
+    --------
+    status_message: The result of password update request
+    status: The status of the password update
+            options: success,failed
+    status_code: request status code
+    """
+
     # Check Validity Of Session
     try:
         data = jwt.decode(token,os.environ.get('SECRETE_KEY'),algorithms=['HS256'])

@@ -608,3 +608,208 @@ TypeError: strptime() takes exactly 2 arguments (1 given)
 2022-04-27 14:52:23,791:DEBUG::====================================================================================================
 2022-04-27 14:52:23,791:INFO::Server Utils Section :: Logging Active
 2022-04-27 14:52:23,792:DEBUG::
+2022-04-27 15:39:21,569:DEBUG::
+2022-04-27 15:39:21,570:DEBUG::====================================================================================================
+2022-04-27 15:39:21,570:INFO::Server Utils Section :: Logging Active
+2022-04-27 15:39:21,570:DEBUG::
+2022-04-27 16:19:37,545:DEBUG::
+2022-04-27 16:19:37,545:DEBUG::====================================================================================================
+2022-04-27 16:19:37,546:INFO::Server Utils Section :: Logging Active
+2022-04-27 16:19:37,546:DEBUG::
+2022-04-27 16:20:27,839:DEBUG::
+2022-04-27 16:20:27,839:DEBUG::====================================================================================================
+2022-04-27 16:20:27,839:INFO::Server Utils Section :: Logging Active
+2022-04-27 16:20:27,840:DEBUG::
+2022-04-27 16:20:36,080:ERROR::ResetPasswordError: Failed to Reset Password,HTTPSConnectionPool(host='api.sendinblue.com', port=443): Max retries exceeded with url: /v3/smtp/email (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000022E58DC7A30>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed'))
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\util\connection.py", line 72, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 386, in _make_request
+    self._validate_conn(conn)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 1040, in _validate_conn
+    conn.connect()
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 358, in connect
+    self.sock = conn = self._new_conn()
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x0000022E58DC7A30>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\WEB_APPS\Doxael\Api_Server\app\server_utils.py", line 1149, in Reset_Password
+    Send_Response = Send_Reset_Mail(email,reset_pin)
+  File "C:\Users\Adefolahan\WEB_APPS\Doxael\Api_Server\app\server_utils.py", line 1098, in Send_Reset_Mail
+    sendinblue_api.send_transac_email(send_smtp_email)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api\transactional_emails_api.py", line 1642, in send_transac_email
+    (data) = self.send_transac_email_with_http_info(send_smtp_email, **kwargs)  # noqa: E501
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api\transactional_emails_api.py", line 1705, in send_transac_email_with_http_info
+    return self.api_client.call_api(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 329, in call_api
+    return self.__call_api(resource_path, method,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 161, in __call_api
+    response_data = self.request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 371, in request
+    return self.rest_client.POST(url,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\rest.py", line 269, in POST
+    return self.request("POST", url,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\rest.py", line 162, in request
+    r = self.pool_manager.request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\request.py", line 78, in request
+    return self.request_encode_body(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\request.py", line 170, in request_encode_body
+    return self.urlopen(method, url, **extra_kw)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\poolmanager.py", line 376, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 785, in urlopen
+    retries = retries.increment(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\util\retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.sendinblue.com', port=443): Max retries exceeded with url: /v3/smtp/email (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000022E58DC7A30>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed'))
+2022-04-27 16:20:48,320:ERROR::ResetPasswordError: Failed to Reset Password,HTTPSConnectionPool(host='api.sendinblue.com', port=443): Max retries exceeded with url: /v3/smtp/email (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000022E58DC6E30>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed'))
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\util\connection.py", line 72, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 386, in _make_request
+    self._validate_conn(conn)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 1040, in _validate_conn
+    conn.connect()
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 358, in connect
+    self.sock = conn = self._new_conn()
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x0000022E58DC6E30>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\WEB_APPS\Doxael\Api_Server\app\server_utils.py", line 1149, in Reset_Password
+    Send_Response = Send_Reset_Mail(email,reset_pin)
+  File "C:\Users\Adefolahan\WEB_APPS\Doxael\Api_Server\app\server_utils.py", line 1098, in Send_Reset_Mail
+    sendinblue_api.send_transac_email(send_smtp_email)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api\transactional_emails_api.py", line 1642, in send_transac_email
+    (data) = self.send_transac_email_with_http_info(send_smtp_email, **kwargs)  # noqa: E501
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api\transactional_emails_api.py", line 1705, in send_transac_email_with_http_info
+    return self.api_client.call_api(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 329, in call_api
+    return self.__call_api(resource_path, method,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 161, in __call_api
+    response_data = self.request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 371, in request
+    return self.rest_client.POST(url,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\rest.py", line 269, in POST
+    return self.request("POST", url,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\rest.py", line 162, in request
+    r = self.pool_manager.request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\request.py", line 78, in request
+    return self.request_encode_body(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\request.py", line 170, in request_encode_body
+    return self.urlopen(method, url, **extra_kw)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\poolmanager.py", line 376, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 785, in urlopen
+    retries = retries.increment(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\util\retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.sendinblue.com', port=443): Max retries exceeded with url: /v3/smtp/email (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000022E58DC6E30>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed'))
+2022-04-27 16:20:57,215:ERROR::ResetPasswordError: Failed to Reset Password,HTTPSConnectionPool(host='api.sendinblue.com', port=443): Max retries exceeded with url: /v3/smtp/email (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000022E58DC6590>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed'))
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\util\connection.py", line 72, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\socket.py", line 955, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11002] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 386, in _make_request
+    self._validate_conn(conn)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 1040, in _validate_conn
+    conn.connect()
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 358, in connect
+    self.sock = conn = self._new_conn()
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x0000022E58DC6590>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Adefolahan\WEB_APPS\Doxael\Api_Server\app\server_utils.py", line 1149, in Reset_Password
+    Send_Response = Send_Reset_Mail(email,reset_pin)
+  File "C:\Users\Adefolahan\WEB_APPS\Doxael\Api_Server\app\server_utils.py", line 1098, in Send_Reset_Mail
+    sendinblue_api.send_transac_email(send_smtp_email)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api\transactional_emails_api.py", line 1642, in send_transac_email
+    (data) = self.send_transac_email_with_http_info(send_smtp_email, **kwargs)  # noqa: E501
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api\transactional_emails_api.py", line 1705, in send_transac_email_with_http_info
+    return self.api_client.call_api(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 329, in call_api
+    return self.__call_api(resource_path, method,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 161, in __call_api
+    response_data = self.request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\api_client.py", line 371, in request
+    return self.rest_client.POST(url,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\rest.py", line 269, in POST
+    return self.request("POST", url,
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\sib_api_v3_sdk\rest.py", line 162, in request
+    r = self.pool_manager.request(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\request.py", line 78, in request
+    return self.request_encode_body(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\request.py", line 170, in request_encode_body
+    return self.urlopen(method, url, **extra_kw)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\poolmanager.py", line 376, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\connectionpool.py", line 785, in urlopen
+    retries = retries.increment(
+  File "C:\Users\Adefolahan\miniconda3\envs\doxael\lib\site-packages\urllib3\util\retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.sendinblue.com', port=443): Max retries exceeded with url: /v3/smtp/email (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000022E58DC6590>: Failed to establish a new connection: [Errno 11002] getaddrinfo failed'))
+2022-04-27 16:55:09,875:DEBUG::
+2022-04-27 16:55:09,875:DEBUG::====================================================================================================
+2022-04-27 16:55:09,875:INFO::Server Utils Section :: Logging Active
+2022-04-27 16:55:09,877:DEBUG::
