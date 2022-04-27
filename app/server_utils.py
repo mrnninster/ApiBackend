@@ -5,31 +5,49 @@
 ###########################################################
 
 import os
+import jwt
 import secrets
 import logging
+import datetime
+import sib_api_v3_sdk
 
-from io import BytesIO
+
 from PIL import Image
+from io import BytesIO
+from random import randint
+from sib_api_v3_sdk.rest import ApiException
 from app.db_model import db, Admin, Product, Vendor, Customer
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
+# Configure API key authorization: api-key for SENDINBLUE
+configuration = sib_api_v3_sdk.Configuration()
+configuration.api_key['api-key'] = os.environ.get("SENDINBLUE_API_KEY")
+
+
+# Logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 # Log File Logging Format
 formatter = logging.Formatter("%(asctime)s:%(levelname)s::%(message)s")
+
 
 # Log File Handler
 Log_File_Handler = logging.FileHandler("doxael_server_utils.log")
 Log_File_Handler.setLevel(logging.DEBUG)
 Log_File_Handler.setFormatter(formatter)
 
+
 # Stream Handlers
 Stream_Handler = logging.StreamHandler()
+
 
 # Adding The Handlers
 logger.addHandler(Log_File_Handler)
 logger.addHandler(Stream_Handler)
+
 
 # Log On START 
 logger.debug("")
@@ -143,6 +161,58 @@ def genUniqueToken(table):
         genUniqueToken(table)
     else:
         return newToken
+
+
+def genResetPin(N=6):
+    """
+    Randomly generates an N character long
+    number for resetting the password
+
+    Params
+    ------
+    N: Length of ID to be generated
+
+    Returns
+    -------
+    Type: String
+    """
+    gen_pin = ''.join(["{}".format(randint(0, 9)) for num in range(0,N)])
+    return gen_pin
+
+
+def genUniqueResetPin(table):
+    """
+    Randomly generates a Unique 6 character
+    long reset pin by checking the table 
+    to ensure uniqueness
+
+    Params
+    ------
+    table: Database table against which the 
+            uniqueness of the generated ID 
+            is checked.
+
+    Returns
+    -------
+    Type: String
+    """
+    # Generated ID
+    newPin = genResetPin(6)
+
+    # Check IDs uniqueness
+    if table == Admin:
+        checkPin = Admin.query.filter_by(admin_reset_pin = newPin).all()
+
+    if table == Customer:
+        checkPin = Customer.query.filter_by(customer_reset_pin = newPin).all()
+
+    if table == Vendor:
+        checkPin = Vendor.query.filter_by(vendor_reset_pin = newPin).all()
+
+    if len(checkPin) > 0:
+        genUniqueResetPin(table)
+    else:
+        return newPin
 
 
 def Create_Account(account_type,**kwargs):
@@ -272,12 +342,19 @@ def Account_Login(account_type,email,password):
     
     # Check Account Exists
     if Account is not None:
+
+        # Check For Permitted Accounts
+        if account_type == "admin":
+            pass
         
-        # Check For Permitted Vendor Accounts
-        if (account_type == "vendor") and (Account.permitted == True):
+        elif (account_type == "vendor") and (Account.permitted == True):
             vendor_permitted = True
+
+        elif (account_type == "customer") and (Account.permitted == True):
+            customer_permitted = True
+
         else:
-            return({"status_message":"Admin Has Not Permitted Account","status":"failed","status_code":401})
+            return({"status_message":"Admin Has Not Permitted Vendor Account","status":"failed","status_code":400})
 
 
         # Checked Password
@@ -290,11 +367,11 @@ def Account_Login(account_type,email,password):
                 return{"admin_id":Account.admin_id,"user_name":Account.admin_name,"email":Account.admin_email,"push_notification_token":Account.admin_push_notification_token,"status_message":"Admin Logged In","status":"success","status_code":200}
 
             # For Vendor
-            elif(account_type == "vendor")and (vendor_permitted == True):
+            elif(account_type == "vendor") and (vendor_permitted == True):
                 return{"vendor_id":Account.vendor_id,"user_name":Account.vendor_name,"email":Account.vendor_email,"push_notification_token":Account.vendor_push_notification_token,"status_message":"Vendor Logged In","status":"success","status_code":200}
 
             # For Customer
-            elif(account_type == "customer"):
+            elif(account_type == "customer") and (customer_permitted == True):
                 return{"customer_id":Account.customer_id,"user_name":Account.customer_name,"email":Account.customer_email,"push_notification_token":Account.customer_push_notification_token,"status_message":"Customer Logged In","status":"success","status_code":200}
 
         else:
@@ -986,3 +1063,143 @@ def Get_All_Customers(admin_id,filter):
     except Exception as e:
         logger.debug(f"FetchCustomersError: Failed to Fetch Customers,{e}")
         return{"status_message":"Failed to Fetch Customers","status":"failed","status_code":400}
+
+
+def Send_Reset_Mail(email,reset_pin):
+    """
+    This function sends the password reset mail to
+    the specified email.
+
+    Params:
+    -------
+    email: The email of the user
+    reset_pin: The reset pin to be sent
+
+    Returns:
+    --------
+    ApiResponse: The response of the send in blue api
+    ResetToken: The reset token to be sent to the user,
+            expires after 13 minutes.
+    status_message: The result of sending the mail
+    status: The status of the mail sending
+            options: success,failed
+    status_code: request status code
+    """
+    try:
+        # Create a new API Instance
+        sendinblue_api = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+        senderSmtp = sib_api_v3_sdk.SendSmtpEmailSender(name="Password Reset",email="no_reply@doxael.com")
+        sendTo = sib_api_v3_sdk.SendSmtpEmailTo(email="adefolahanakinsola@gmail.com")
+        arrTo = [sendTo] 
+        send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(sender=senderSmtp,to=arrTo,html_content=f"Kindly Reset Your Password using the code {reset_pin}, please be aware that, the validity period for password reset is 15 minutes",subject="Resetting Your Account Password")
+
+        # Send a transactional 
+        api_response = sendinblue_api.send_transac_email(send_smtp_email)
+
+        # Create Timed Token
+        expiry_time = datetime.datetime.now() + datetime.timedelta(minutes=15)
+        token = jwt.encode({'reset_pin':reset_pin,'email':email,'expiration': f"{expiry_time}"},os.environ.get('SECRETE_KEY'),algorithm='HS256')
+
+        # Return Response
+        return {"ResetToken":token,"status_message":"Password Reset Mail Sent","status":"success","status_code":200}
+
+    except ApiException as e:
+        logger.exception(f"SendResetMailError: Failed to Send Reset Mail,{e}")
+        return {"status_message":"Failed to Send Password Reset Mail","status":"failed","status_code":400}
+
+
+def Reset_Password(account_type,email=None):
+    """
+    This function resets the password of the specified user
+
+    Params:
+    -------
+    account_type: The type of account to be reset
+    email: The email of the user
+
+    Returns:
+    --------
+    status_message: The result of sending the mail
+    status: The status of the mail sending
+            options: success,failed
+    status_code: request status code
+    """
+    try:
+        # Generate and Store Reset Pin
+        if account_type == "admin":
+            reset_pin = genUniqueResetPin(Admin)
+            admin = Admin.query.filter_by(admin_email=email).first()
+            admin.admin_reset_pin = reset_pin
+            db.session.commit()
+
+        elif account_type == "vendor":
+            reset_pin = genUniqueResetPin(Vendor)
+            vendor = Vendor.query.filter_by(vendor_email=email).first()
+            vendor.vendor_reset_pin = reset_pin
+            db.session.commit()
+
+        elif account_type == "customer":
+            reset_pin = genUniqueResetPin(Customer)
+            customer = Customer.query.filter_by(customer_email=email).first()
+            customer.customer_reset_pin = reset_pin
+            db.session.commit()
+
+        # Send Reset Pin to Email
+        Send_Response = Send_Reset_Mail(email,reset_pin)
+        return Send_Response
+    
+    except Exception as e:
+        logger.exception(f"ResetPasswordError: Failed to Reset Password,{e}")
+        return{"status_message":"Failed to Reset Password","status":"failed","status_code":400}
+
+
+def Update_Password(account_type,token,pin,password,confirmPassword):
+    # Check Validity Of Session
+    try:
+        data = jwt.decode(token,os.environ.get('SECRETE_KEY'),algorithms=['HS256'])
+        email = data['email']
+        expiry_time = datetime.datetime.strptime(data['expiration'], "%Y-%m-%d %H:%M:%S.%f")
+
+        # Check If Token Expired
+        if datetime.datetime.now() > expiry_time:
+            return {"status_message":"Session Expired","status":"failed","status_code":400}
+
+        # Check If Password Matches
+        if password != confirmPassword:
+            return {"status_message":"Passwords Do Not Match","status":"failed","status_code":400}
+
+        # Check If Pin Matches
+        if account_type == "admin":
+            admin = Admin.query.filter_by(admin_email=email).first()
+            if admin.admin_reset_pin != pin:
+                return {"status_message":"Invalid Pin","status":"failed","status_code":400}
+
+            # Update Password
+            admin.password = generate_password_hash(password)
+            db.session.commit()
+
+        elif account_type == "vendor":
+            vendor = Vendor.query.filter_by(vendor_email=email).first()
+            if vendor.vendor_reset_pin != pin:
+                return {"status_message":"Invalid Pin","status":"failed","status_code":400}
+
+            # Update Password
+            vendor.password = generate_password_hash(password)
+            db.session.commit()
+
+        elif account_type == "customer":
+            customer = Customer.query.filter_by(customer_email=email).first()
+            if customer.customer_reset_pin != pin:
+                return {"status_message":"Invalid Pin","status":"failed","status_code":400}
+
+            # Update Password
+            customer.password = generate_password_hash(password)
+            db.session.commit()
+
+        # Return Response
+        return {"status_message":"Password Updated","status":"success","status_code":200}
+
+    except Exception as e:
+        logger.exception(f"UpdatePasswordError: Failed to Update Password,{e}")
+        return{"status_message":"Failed to Update Password","status":"failed","status_code":400}

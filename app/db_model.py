@@ -11,6 +11,7 @@ class Admin(db.Model):
     admin_name = Column(String(255),unique=False,index=True)
     admin_email = Column(String(255),unique=True,index=True)
     password = Column(String(255),unique=True,index=True)
+    admin_reset_pin = Column(String(255),unique=True,index=True)
     admin_push_notification_token = Column(String(255),unique=True,index=True)
 
     def __repr__(self):
@@ -43,6 +44,7 @@ class Vendor(db.Model):
     vendor_name = Column(String(255),unique=False,index=True)
     vendor_email = Column(String(255),unique=True,index=True)
     password = Column(String(255),unique=True,index=True)
+    vendor_reset_pin = Column(String(255),unique=True,index=True)
     permitted = Column(Boolean,unique=False)
     permitted_by = Column(String(255),unique=False)
     vendor_push_notification_token = Column(String(255),unique=True,index=True)
@@ -61,6 +63,7 @@ class Customer(db.Model):
     password = Column(String(255),unique=True,index=True)
     customer_address = Column(Text(2000),unique=False,index=False)
     customer_cards = Column(Text(2000),unique=False,index=False)
+    customer_reset_pin = Column(String(255),unique=True,index=True)
     customer_push_notification_token = Column(String(255),unique=True,index=True)
     permitted = Column(Boolean,unique=False)
     permitted_by = Column(String(255),unique=False)
