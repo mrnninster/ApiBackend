@@ -328,11 +328,11 @@ def vendor_edit_product():
 def vendor_remove_product():
     
     # Get Form Data
-    admin_id = request.form["vendor_id"]
+    vendor_id = request.form["vendor_id"]
     product_id = request.form["product_id"]
 
     # Remove Product
-    Remove_Product_Response = Remove_Product("vendor",admin_id,product_id)
+    Remove_Product_Response = Remove_Product("vendor",vendor_id,product_id)
     return Remove_Product_Response
 
 
@@ -362,6 +362,62 @@ def customer_login():
 
     # Request Response
     return(login_response)
+
+
+@app.route(f"/customer_reset_password",methods=["POST"])
+def customer_reset_password():
+
+    # Get Form Data
+    email = request.form["email"]
+
+    # Reset Password
+    Reset_Password_Response = Reset_Password("customer",email)
+    return Reset_Password_Response
+
+
+@app.route(f"/customer_update_password",methods=["POST"])
+def customer_update_password():
+
+    # Get Form Data
+    session_token = request.form["reset_token"]
+    pin = request.form["reset_pin"]
+    password = request.form["password"]
+    confirmPassword = request.form["confirmPassword"]
+
+    # Update Password
+    Update_Password_Response = Update_Password("customer",session_token,pin,password,confirmPassword)
+    return Update_Password_Response
+
+
+@app.route(f"/show_customer_purchases",methods=["POST"])
+def show_customer_purchases():
+    
+        # Get Customer ID
+        customer_id = request.form["customer_id"]
+        filter_type = request.form["filter_type"] if "filter_type" in request.form else None
+        filter_value = request.form["filter_value"] if "filter_value" in request.form else None
+    
+        # Get All Purchases
+        all_purchases = Show_Purchases(customer_id,filter_type,filter_value)
+        return all_purchases
+
+
+@app.route(f"/add_purchases",methods=["POST"])
+def add_purchases():
+
+    try:
+        # Get Form Data
+        order_id = request.json["order_id"]
+        customer_id = request.json["customer_id"]
+        total_price = request.json["total_price"]
+        purchase_data = request.json["purchases"]
+
+        # Add Purchase
+        Add_Purchase_Response = Add_Purchase(customer_id,order_id,total_price,purchase_data)
+        return Add_Purchase_Response
+
+    except Exception as e:
+        return jsonify({"error":str(e)})
 
 
 # Multi Category Routes
