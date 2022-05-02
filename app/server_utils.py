@@ -6,6 +6,7 @@
 
 import os
 import jwt
+import uuid
 import secrets
 import logging
 import datetime
@@ -16,7 +17,7 @@ from PIL import Image
 from io import BytesIO
 from random import randint
 from sib_api_v3_sdk.rest import ApiException
-from app.db_model import db, Admin, Product, Vendor, Customer
+from app.db_model import db, Admin, Product, Vendor, Customer, Orders
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -1222,3 +1223,93 @@ def Update_Password(account_type,token,pin,password,confirmPassword):
     except Exception as e:
         logger.exception(f"UpdatePasswordError: Failed to Update Password,{e}")
         return{"status_message":"Failed to Update Password","status":"failed","status_code":400}
+
+
+def Add_Purchase(customer_id,order_id,total_price,purchase_details):
+    """
+    This function adds a purchase to the database
+
+    Params:
+    -------
+    customer_id: The id of the customer who made the purchase
+    order_id: The id of the order that was made
+    purchase_details: The details of the purchase
+    total_price: The total price of the purchase
+
+    Returns:
+    --------
+    status_message: The result of adding the purchase
+    status: The status of the purchase addition
+            options: success,failed
+    status_code: request status code
+    """
+    for details in purchase_details:
+
+        # Create Order Entry
+        unique_id = str(uuid.uuid4())
+        order_date=details['order_date'] if details["order_date"] else datetime.datetime.now()
+        order_vendor_id=details['vendor_id'] if details["vendor_id"] else None
+        order_product_id=details['product_id'] if details["product_id"] else None
+        order_product_name=details['product_name'] if details["product_name"] else None
+        order_product_image=details['product_image'] if details["product_image"] else None
+        order_product_price=details['product_price'] if details["product_price"] else None
+        order_product_discount=details["product_discount"] if details["product_discount"] else None
+        order_product_quantity=details['product_quantity'] if details["product_quantity"] else None
+        order_product_description=details['product_description'] if details["product_description"] else None
+
+        try:
+            # Add Purchase
+            purchase = Orders(order_id=order_id,order_customer_id=customer_id,order_vendor_id=order_vendor_id,item_unique_id=unique_id,order_total_price=total_price,order_product_id=order_product_id,order_product_name=order_product_name,order_product_price=order_product_price,order_product_discount=order_product_discount,order_product_quantity=order_product_quantity,order_product_image=order_product_image,order_product_description=order_product_description,order_product_is_available=True,order_date=order_date)
+            db.session.add(purchase)
+            db.session.commit()
+
+        except Exception as e:
+            logger.exception(f"AddPurchaseError: Failed to Add Purchase,{e}")
+            return{"status_message":"Failed to Add Purchase","status":"failed","status_code":400}
+
+    return {"status_message":"Purchase Added","status":"success","status_code":200}
+
+
+def Show_Purchases(customer_id,filter_type=None,filter_value=None):
+    """
+    This function shows all the purchases made by the specified customer
+
+    Params:
+    -------
+    customer_id: The id of the customer
+    filter_type: The type filter to be used to filter the purchases made by the customer
+            The filter options are: order_id,item_unique_id,order_date,order_name
+    filter_value: The value of the filter to be used to filter the purchases made by the customer
+
+    Returns:
+    --------
+    status_message: The result of showing the purchases
+    status: The status of the showing of the purchases
+            options: success,failed
+    status_code: request status code
+    """
+    try:
+        # Get Purchase
+        if filter_type == "order_id":
+            orders = Orders.query.filter_by(order_customer_id=customer_id,order_id=filter_value).all()
+
+        elif filter_type == "item_unique_id":
+            orders = Orders.query.filter_by(order_customer_id=customer_id,item_unique_id=filter_value).all()
+
+        elif filter_type == "order_date":
+            orders = Orders.query.filter_by(order_customer_id=customer_id,order_date=filter_value).all()
+
+        elif filter_type == "product_name":
+            orders = Orders.query.filter_by(order_customer_id=customer_id,order_product_name=filter_value).all()
+
+        else:
+            orders = Orders.query.filter_by(order_customer_id=customer_id).all()
+
+        orders_list = [{"order_part_of":order.order_id,"order_vendor_id":order.order_vendor_id,"item_unique_id":order.item_unique_id,"order_total_price":order.order_total_price,"order_product_id":order.order_product_id,"order_product_name":order.order_product_name,"order_product_price":order.order_product_price,"order_product_discount":order.order_product_discount,"order_product_quantity":order.order_product_quantity,"order_product_image":order.order_product_image,"order_product_description":order.order_product_description,"order_product_was_available":order.order_product_is_available,"order_date":order.order_date,"item_order_total_value":((int(order.order_product_price) * int(order.order_product_quantity)) - ((int(order.order_product_discount)/100) * (int(order.order_product_price) * int(order.order_product_quantity))))} for order in orders]
+
+        # Return Response
+        return {"status_message":"Purchases Found","status":"success","status_code":200,"purchases":orders_list}
+
+    except Exception as e:
+        logger.exception(f"ShowPurchasesError: Failed to Show Purchases,{e}")
+        return{"status_message":"Failed to Show Purchases","status":"failed","status_code":400}
