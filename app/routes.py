@@ -402,7 +402,7 @@ def show_customer_purchases():
         return all_purchases
 
 
-@app.route(f"/add_purchases",methods=["POST"])
+@app.route(f"/add_customer_purchases",methods=["POST"])
 def add_purchases():
 
     try:
