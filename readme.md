@@ -1,5 +1,5 @@
-# DOXAEL READ ME FILE FOR BACKEND
-Read me file for the backend routes for the doxael app
+# READ ME FILE FOR APIBACKEND
+Read me file for the backend routes for the apiBackend app
 
 ## ROUTES
 - /test: GET
@@ -8,7 +8,7 @@ Read me file for the backend routes for the doxael app
     - Return:
         - type: JSON
         - keys: message,success
-        - sample: {"message": f"Api for DOXAEL APP is Alive", "status": "success"})
+        - sample: {"message": f"Api for APP is Alive", "status": "success"})
 
 
 - /create_admin: POST
@@ -20,7 +20,7 @@ Read me file for the backend routes for the doxael app
         - keys: id,username,password,email,push_notification_token,status_message,status,status_code
         - sample: 
             - success: {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":Admin Account Created","status":"success","status_code":200}
-            - failed: {"status_message":f"Account Already Exists with email admin_mail@doxael.com}","status":"failed","status_code":400}
+            - failed: {"status_message":f"Account Already Exists with email admin_mail@apibackend.com}","status":"failed","status_code":400}
 
 
 - /admin_login: POST
@@ -270,7 +270,7 @@ Read me file for the backend routes for the doxael app
         - keys: id,username,password,email,push_notification_token,status_message,status,status_code
         - sample: 
             - success: {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":Vendor Account Created","status":"success","status_code":200}
-            - failed: {"status_message":f"Account Already Exists with email vendor_mail@doxael.com}","status":"failed","status_code":400}
+            - failed: {"status_message":f"Account Already Exists with email vendor_mail@apiBackend.com}","status":"failed","status_code":400}
 
 
 - /vendor_login: POST
@@ -389,7 +389,7 @@ Read me file for the backend routes for the doxael app
         - keys: id,username,password,email,push_notification_token,status_message,status,status_code
         - sample: 
             - success: {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":Customer Account Created","status":"success","status_code":200}
-            - failed: {"status_message":f"Account Already Exists with email customer_mail@doxael.com}","status":"failed","status_code":400}
+            - failed: {"status_message":f"Account Already Exists with email customer_mail@apiBackend.com}","status":"failed","status_code":400}
 
 
 - /customer_login: POST
