@@ -5,4 +5,4 @@ app = create_app()
 app.secret_key = secrets.token_hex(16)
 
 if __name__ == "__main__":
-    app.run(debug=False,port=5003)
+    app.run(debug=False)
