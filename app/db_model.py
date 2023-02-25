@@ -356,12 +356,12 @@ class Admin(db.Model):
                 "status":"failed"
             }
 
-
-    # def account_login(self):
-    #     """
-    #     This function validates that an admin
-    #     exist and logs the admin in
-    #     """
+    
+    def account_login(self):
+        """
+        This function validates that an admin
+        exist and logs the admin in
+        """
 
 class Product(db.Model):
     __tablename__ = "products"
