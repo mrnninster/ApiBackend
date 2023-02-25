@@ -1,306 +1,174 @@
-###########################################################
-#####                                                ######
-#####       SERVER UTILS CALLBACK DATA SECTION       ######
-#####                                                ######
-###########################################################
-
-import os
-import jwt
-import uuid
 import secrets
-import logging
-import datetime
-import sib_api_v3_sdk
-
-
-from PIL import Image
-from io import BytesIO
 from random import randint
-from sib_api_v3_sdk.rest import ApiException
-from app.db_model import db, Admin, Product, Vendor, Customer, Orders
-from werkzeug.security import generate_password_hash, check_password_hash
 
+from app.db_model import *
 
-# Configure API key authorization: api-key for SENDINBLUE
-configuration = sib_api_v3_sdk.Configuration()
-configuration.api_key['api-key'] = os.environ.get("SENDINBLUE_API_KEY")
-
-
-# Logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-
-# Log File Logging Format
-formatter = logging.Formatter("%(asctime)s:%(levelname)s::%(message)s")
-
-
-# Log File Handler
-Log_File_Handler = logging.FileHandler("doxael_server_utils.log")
-Log_File_Handler.setLevel(logging.DEBUG)
-Log_File_Handler.setFormatter(formatter)
-
-
-# Stream Handlers
-Stream_Handler = logging.StreamHandler()
-
-
-# Adding The Handlers
-logger.addHandler(Log_File_Handler)
-logger.addHandler(Stream_Handler)
-
-
-# Log On START 
-logger.debug("")
-logger.debug("="*100)
-logger.info("Server Utils Section :: Logging Active")
-logger.debug("")
-
-
-def genID(N=16):
-    """ 
-    Randomly generates a N character long
-    alphanumeric
-
-    Params
-    ------
-    N: Length of ID to be generated
-
-    Returns
-    -------
-    Type: String
+class HelperClass():
     """
-    gen_id = secrets.token_hex(N)
-    return gen_id
-
-
-def genUniqueID(table):
-    """
-    Randomly generates a Unique 16 character
-    long alphanumeric by checking the table 
-    to ensure uniqueness
-
-    Params
-    ------
-    table: Database table against which the 
-            uniqueness of the generated ID 
-            is checked. 
-
-    Returns
-    -------
-    Type: String
-    """
-    # Generated ID
-    newID = genID()
-
-    # Check IDs uniqueness
-    if table == Admin:
-        checkID = Admin.query.filter_by(admin_id = newID).all()
-
-    if table == Customer:
-        checkID = Customer.query.filter_by(customer_id = newID).all()
-
-    if table == Vendor:
-        checkID = Vendor.query.filter_by(vendor_id = newID).all()
-
-    if table == Product:
-        checkID = Product.query.filter_by(product_id = newID).all()
-
-    if len(checkID) > 0:
-        genUniqueID(table)
-    else:
-        return newID
-
-
-def genToken(N=32):
-    """
-    Randomly generates a N character long url
-    safe token
-
-    Params
-    ------
-    N: Length of generated token
-
-    Returns
-    -------
-    Type: String
-    """
-    gen_token = secrets.token_urlsafe(N)
-    return gen_token
-
-
-def genUniqueToken(table):
-    """
-    Randomly generates a Unique 32 character
-    long url safe token by checking the table 
-    to ensure uniqueness
-
-    Params
-    ------
-    table: Database table against which the 
-            uniqueness of the generated ID 
-            is checked.
-
-    Returns
-    -------
-    Type: String
-    """
-    # Generated ID
-    newToken = genToken()
-
-    # Check IDs uniqueness
-    if table == Admin:
-        checkToken = Admin.query.filter_by(admin_push_notification_token = newToken).all()
-
-    if table == Customer:
-        checkToken = Customer.query.filter_by(customer_push_notification_token = newToken).all()
-
-    if table == Vendor:
-        checkToken = Vendor.query.filter_by(vendor_push_notification_token = newToken).all()
-
-    if len(checkToken) > 0:
-        genUniqueToken(table)
-    else:
-        return newToken
-
-
-def genResetPin(N=6):
-    """
-    Randomly generates an N character long
-    number for resetting the password
-
-    Params
-    ------
-    N: Length of ID to be generated
-
-    Returns
-    -------
-    Type: String
-    """
-    gen_pin = ''.join(["{}".format(randint(0, 9)) for num in range(0,N)])
-    return gen_pin
-
-
-def genUniqueResetPin(table):
-    """
-    Randomly generates a Unique 6 character
-    long reset pin by checking the table 
-    to ensure uniqueness
-
-    Params
-    ------
-    table: Database table against which the 
-            uniqueness of the generated ID 
-            is checked.
-
-    Returns
-    -------
-    Type: String
-    """
-    # Generated ID
-    newPin = genResetPin(6)
-
-    # Check IDs uniqueness
-    if table == Admin:
-        checkPin = Admin.query.filter_by(admin_reset_pin = newPin).all()
-
-    if table == Customer:
-        checkPin = Customer.query.filter_by(customer_reset_pin = newPin).all()
-
-    if table == Vendor:
-        checkPin = Vendor.query.filter_by(vendor_reset_pin = newPin).all()
-
-    if len(checkPin) > 0:
-        genUniqueResetPin(table)
-    else:
-        return newPin
-
-
-def Create_Account(account_type,**kwargs):
-    """ 
-    Creates the defaul admin user if one dosent exit
-
-    Params
-    ------
-    account_type: The type of account
-            user is creating
-    kwargs: Keyword arguments for
-            email -> "email"
-            password -> "password"
-            username -> "username"
-
-    Returns
-    -------
-    Type: Dict
-    keys: username,password,email,pussh_notification_token
-    status_message: the result of the api query
-    status: Login status
-            options: success,failed
-    status_code: request status code
+    This class contains a collection of helper functions
+    that are required by different models
     """
 
-    # Check Account Exists
-    if account_type == "admin":
+    @staticmethod
+    def genID(N=16):
+        """ 
+        Randomly generates a N character long
+        alphanumeric
 
-        # Check if admin exists
-        Account = Admin.query.filter_by(admin_email=kwargs["email"]).first()
+        Params
+        ------
+        N: Length of ID to be generated
 
-    elif account_type == "vendor":
+        Returns
+        -------
+        Type: String
+        """
+        gen_id = secrets.token_hex(N)
+        return gen_id
 
-        # Check if vendor exists
-        Account = Vendor.query.filter_by(vendor_email=kwargs["email"]).first()
+    @staticmethod
+    def genUniqueID(table):
+        """
+        Randomly generates a Unique 16 character
+        long alphanumeric by checking the table 
+        to ensure uniqueness
 
-    elif account_type == "customer":
+        Params
+        ------
+        table: Database table against which the 
+                uniqueness of the generated ID 
+                is checked. 
 
-        # Check if customer exists
-        Account = Customer.query.filter_by(customer_email=kwargs["email"]).first()
+        Returns
+        -------
+        Type: String
+        """
+        # Generated ID
+        newID = HelperClass.genID()
 
-    # if Account Does Not Exist
-    if Account is None:
-        
-        # Params
-        username = kwargs["username"] if kwargs["username"] is not None else None
-        email = kwargs["email"]
-        Password = kwargs["password"]
-        hashedPassword = generate_password_hash(Password)
+        # Check IDs uniqueness
+        if table == Admin:
+            checkID = Admin.query.filter_by(admin_id = newID).all()
+
+        if table == Customer:
+            checkID = Customer.query.filter_by(customer_id = newID).all()
+
+        if table == Vendor:
+            checkID = Vendor.query.filter_by(vendor_id = newID).all()
+
+        if table == Product:
+            checkID = Product.query.filter_by(product_id = newID).all()
+
+        if len(checkID) > 0:
+            HelperClass.genUniqueID(table)
+        else:
+            return newID
+
+    @staticmethod
+    def genToken(N=32):
+        """
+        Randomly generates a N character long url
+        safe token
+
+        Params
+        ------
+        N: Length of generated token
+
+        Returns
+        -------
+        Type: String
+        """
+        gen_token = secrets.token_urlsafe(N)
+        return gen_token
+
+    @staticmethod
+    def genUniqueToken(table):
+        """
+        Randomly generates a Unique 32 character
+        long url safe token by checking the table 
+        to ensure uniqueness
+
+        Params
+        ------
+        table: Database table against which the 
+                uniqueness of the generated ID 
+                is checked.
+
+        Returns
+        -------
+        Type: String
+        """
+        # Generated ID
+        newToken = HelperClass.genToken()
+
+        # Check IDs uniqueness
+        if table == Admin:
+            checkToken = Admin.query.filter_by(admin_push_notification_token = newToken).all()
+
+        if table == Customer:
+            checkToken = Customer.query.filter_by(customer_push_notification_token = newToken).all()
+
+        if table == Vendor:
+            checkToken = Vendor.query.filter_by(vendor_push_notification_token = newToken).all()
+
+        if len(checkToken) > 0:
+            HelperClass.genUniqueToken(table)
+        else:
+            return newToken
+
+    @staticmethod
+    def genResetPin(N=6):
+        """
+        Randomly generates an N character long
+        number for resetting the password
+
+        Params
+        ------
+        N: Length of ID to be generated
+
+        Returns
+        -------
+        Type: String
+        """
+        gen_pin = ''.join(["{}".format(randint(0, 9)) for num in range(0,N)])
+        return gen_pin
+
+    @staticmethod
+    def genUniqueResetPin(table):
+        """
+        Randomly generates a Unique 6 character
+        long reset pin by checking the table 
+        to ensure uniqueness
+
+        Params
+        ------
+        table: Database table against which the 
+                uniqueness of the generated ID 
+                is checked.
+
+        Returns
+        -------
+        Type: String
+        """
+        # Generated ID
+        newPin = HelperClass.genResetPin(6)
+
+        # Check IDs uniqueness
+        if table == Admin:
+            checkPin = Admin.query.filter_by(admin_reset_pin = newPin).all()
+
+        if table == Customer:
+            checkPin = Customer.query.filter_by(customer_reset_pin = newPin).all()
+
+        if table == Vendor:
+            checkPin = Vendor.query.filter_by(vendor_reset_pin = newPin).all()
+
+        if len(checkPin) > 0:
+            HelperClass.genUniqueResetPin(table)
+        else:
+            return newPin
 
 
-        # Create admin account
-        if account_type == "admin":
-
-            id = genUniqueID(Admin)
-            push_notification_token = genUniqueToken(Admin)
-
-            admin_user = Admin(admin_id=id, admin_name=username, admin_email=email, password=hashedPassword, admin_push_notification_token=push_notification_token)
-            db.session.add(admin_user)
-            db.session.commit()
-
-        # Create vendor account
-        elif account_type == "vendor":
-
-            id = genUniqueID(Vendor)
-            push_notification_token = genUniqueToken(Vendor)
-
-            vendor_user = Vendor(vendor_id=id, vendor_name=username, vendor_email=email, password=hashedPassword, vendor_push_notification_token=push_notification_token)
-            db.session.add(vendor_user)
-            db.session.commit()
-
-        # Create customer account
-        elif account_type == "customer":
-
-            id = genUniqueID(Customer)
-            push_notification_token = genUniqueToken(Customer)
-
-            customer_user = Customer(customer_id=id, customer_name=username, customer_email=email, password=hashedPassword, customer_push_notification_token=push_notification_token)
-            db.session.add(customer_user)
-            db.session.commit()
-
-        # Response
-        return {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":f"{account_type.capitalize()} Account Created","status":"success","status_code":200}
-    
-    # If Account Exists
-    else:
-        return {"status_message":f"Account Already Exists with email {kwargs['email']}","status":"failed","status_code":400}
 
 
 def Account_Login(account_type,email,password):
