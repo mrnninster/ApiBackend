@@ -1,5 +1,5 @@
-# DOXAEL READ ME FILE FOR BACKEND
-Read me file for the backend routes for the doxael app
+# READ ME FILE FOR APIBACKEND
+Read me file for the backend routes for the apiBackend app
 
 ## ROUTES
 - /test: GET
@@ -8,7 +8,7 @@ Read me file for the backend routes for the doxael app
     - Return:
         - type: JSON
         - keys: message,success
-        - sample: {"message": f"Api for DOXAEL APP is Alive", "status": "success"})
+        - sample: {"message": f"Api for APP is Alive", "status": "success"})
 
 
 - /create_admin: POST
@@ -20,7 +20,7 @@ Read me file for the backend routes for the doxael app
         - keys: id,username,password,email,push_notification_token,status_message,status,status_code
         - sample: 
             - success: {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":Admin Account Created","status":"success","status_code":200}
-            - failed: {"status_message":f"Account Already Exists with email admin_mail@doxael.com}","status":"failed","status_code":400}
+            - failed: {"status_message":f"Account Already Exists with email admin_mail@apibackend.com}","status":"failed","status_code":400}
 
 
 - /admin_login: POST
@@ -270,7 +270,7 @@ Read me file for the backend routes for the doxael app
         - keys: id,username,password,email,push_notification_token,status_message,status,status_code
         - sample: 
             - success: {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":Vendor Account Created","status":"success","status_code":200}
-            - failed: {"status_message":f"Account Already Exists with email vendor_mail@doxael.com}","status":"failed","status_code":400}
+            - failed: {"status_message":f"Account Already Exists with email vendor_mail@apiBackend.com}","status":"failed","status_code":400}
 
 
 - /vendor_login: POST
@@ -281,14 +281,14 @@ Read me file for the backend routes for the doxael app
         - type: JSON
         - keys: vendor_id,username,email,push_notification_token,status_message,status,status_code
         - sample:
-            - success: {"vendor_id":vendor_id,"user_name":admin_name,"email":admin_email,"push_notification_token":push_notification_token,"status_message":"Vendor Logged In","status":"success","status_code":200}
+            - success: {"vendor_id":vendor_id,"user_name":vendor_name,"email":admin_email,"push_notification_token":push_notification_token,"status_message":"Vendor Logged In","status":"success","status_code":200}
             - failed: {"status_message":"Invalid Password","status":"failed","status_code":400}
 
 
 - /vendor_reset_password: POST
     - Params:
         - email
-    - Return
+    - Return:
         - type: JSON
         - keys: reset_token,status_message,status,status_code
         - sample:
@@ -302,7 +302,7 @@ Read me file for the backend routes for the doxael app
         - reset_pin
         - password
         - confirmPassword
-    - Return
+    - Return:
         - type: JSON
         - keys: status_message,status,status_code
         - sample:
@@ -376,3 +376,130 @@ Read me file for the backend routes for the doxael app
         - sample:
             - success: {"status_message":"Product Removed","status":"success","status_code":200}
             - failed: {"status_message":"Failed to Remove Product","status":"failed","status_code":400}
+
+
+## CUSTOMER SECTION
+- /create_customer: POST
+    - Params:
+        - email
+        - password
+        - username (value is customers full name)
+    - Return:
+        - type: JSON
+        - keys: id,username,password,email,push_notification_token,status_message,status,status_code
+        - sample: 
+            - success: {"id":id,"username":username,"password":Password,"email":email,"push_notification_token":push_notification_token,"status_message":Customer Account Created","status":"success","status_code":200}
+            - failed: {"status_message":f"Account Already Exists with email customer_mail@apiBackend.com}","status":"failed","status_code":400}
+
+
+- /customer_login: POST
+    - Params:
+        - email
+        - password
+    - Return:
+        - type: JSON
+        - keys: customer_id,username,email,push_notification_token,status_message,status,status_code
+        - sample:
+            - success: {"customer_id":customer_id,"user_name":customer_name,"email":customer_email,"push_notification_token":push_notification_token,"status_message":"Customer Logged In","status":"success","status_code":200}
+            - failed: {"status_message":"Invalid Password","status":"failed","status_code":400}
+
+
+- /customer_reset_password: POST
+    - Params:
+        - email
+    - Return
+        - type: JSON
+        - keys: reset_token,status_message,status,status_code
+        - sample:
+            - success: {"reset_token":token,"status_message":"Password Reset Mail Sent","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Reset Password","status":"failed","status_code":400}
+
+
+- /customer_update_password: POST
+    - Params:
+        - reset_token
+        - reset_pin
+        - password
+        - confirmPassword
+    - Return:
+        - type: JSON
+        - keys: status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Password Updated","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Update Password","status":"failed","status_code":400}
+
+
+- /all_products: GET
+    - Params:
+        - None
+    - Return:
+        - type: JSON
+        - keys: product_data,status_message,status,status_code
+        - sample:
+            - success: {"product_data":[{"product_id":product_id,"product_name":product_name,"product_description":product_description,"product_price":product_price,"product_image":image_URL,"product_discount":product_discount,"product_is_available":product_is_available,"product_owner":product_owner}],"status_message":"All Products Fetched","status":"success","status_code":200}
+            - failed: {"status_message":"No Products Found","status":"failed","status_code":400}
+
+
+- /featured_products: GET
+    - Params: 
+        - None
+    - Return:
+        - type: JSON
+        - keys: featured_products,status_message,status,status_code
+        - sample:
+            - success: {"featured_products": [{"product_description": "product_description","product_discount": "product_discount","product_id": "product_id","product_image": "Image_URL","product_is_available": true,"product_name": "product_name","product_owner": "product_vendor_id","product_price": "product_price"}],"status": "success","status_code": 200,"status_message": "Featured Products Fetched"
+            - failed: {"status_message":"Failed to Fetch Featured Products","status":"failed","status_code":400}
+
+
+- /add_customer_purchases: POST
+    - Params:
+        - type: JSON
+        - keys: order_id,customer_id,total_price,purchases
+        - sample: {
+            "customer_id":"customer_id",
+            "order_id":"randomly_generated_aphanumeric_id",
+            "total_price":59000,
+            "purchases":[{
+                    "vendor_id":"vendor_id_1",
+                    "product_name":"vendor_product_1",
+                    "product_id": "product_id",
+                    "product_image":"image_URL",
+                    "product_price":"product_price",
+                    "product_discount":"product_discount",
+                    "product_quantity":"product_quantity",
+                    "product_description":"product_discription",
+                    "order_date":null
+                },
+                {
+                    "vendor_id":"vendor_id_2",
+                    "product_name":"vendor_product_2",
+                    "product_id": "product_id",
+                    "product_image":"image_URL",
+                    "product_price":"product_price",
+                    "product_discount":"product_discount",
+                    "product_quantity":"product_quantity",
+                    "product_description":"product_discription",
+                    "order_date":null
+                }]
+                }
+    - Returns:
+        - type: JSON
+        - status_message,status,status_code
+        - sample:
+            - success: {"status_message":"Purchase Added","status":"success","status_code":200}
+            - failed: {"status_message":"Failed to Add Purchase","status":"failed","status_code":400}
+
+
+- /show_customer_purchases: POST
+    - Params:
+        - customer_id
+        - filter_type:
+            - options: order_id,item_unique_id,order_date,product_name,None
+        - filter_value:
+            - The value of the selected filter type
+    - Returns:
+        - type: JSON
+        - keys: purchases,status_message,status,status_code
+        - sample: 
+            - success: {"purchases": [{"item_order_total_value": item_order_total_value,"item_unique_id": "item_unique_id","order_date": order_date,"order_part_of": "random_id","order_product_description": "product_description","order_product_discount": "product_discount","order_product_id": "product_id","order_product_image": "Image_URL","order_product_name": "vendor_product","order_product_price": "product_price","order_product_quantity": "product_quantity","order_product_was_available": true,"order_total_price": "total_price_of_order_purchase","order_vendor_id": "vendor_id"}],"status": "success","status_code": 200,"status_message": "Purchases Found"}
+            - failed: {"status_message":"Failed to Show Purchases","status":"failed","status_code":400}

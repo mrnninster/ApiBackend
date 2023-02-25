@@ -7,6 +7,7 @@ load_dotenv(os.path.join(app_dir,'.env'))
 import urllib
 db_password_quoted = urllib.parse.quote(os.environ.get('DB_PASS'))
 
+# Modify Variables In Env File
 class BaseConfig:
     # General Config
     SECRET_KEY = os.environ.get('SECRET_KEY')
